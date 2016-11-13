@@ -109,11 +109,39 @@ def run_pla(target_line, hypothesis_line, training_points, max_number_of_iterati
         #misclassified_point.print_object()
         hypothesis_line = update_hypothesis(hypothesis_line, misclassified_point, target_line, learning_rate)
     return hypothesis_line, number_of_iterations
+# A nice function to visualise the points and the line
+def plot_linear_regression(points, target_labels, line):
+    import matplotlib
+    import matplotlib.pyplot as plt
+    matplotlib.style.use('ggplot')
+    x_list = []
+    y_list = []
+
+    for point in points:
+        x_list.append(point.x)
+        y_list.append(point.y) 
+        
+    slope = -(line.w1/line.w2)
+    intercept = -(line.w0/line.w2)
+    abline_values = [slope*i + intercept for i in x_list]
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_title('Linear Regression')
+    ax.set_xlabel('x1')
+    ax.set_ylabel('x2')        
+    ax.scatter(x_list, y_list, c=target_labels, marker='x', alpha = 0.75)
+    ax.plot(x_list, abline_values)
+    
+
+    
+    
+        
     
 def experiment():
     max_number_of_iterations = 10000
     number_of_runs = 1000
-    number_of_training_points = 1000 # or 100 for Q6
+    number_of_training_points = 100 # or 1000 for Q7
     learning_rate = 1.0
     total_number_of_iterations = 0
     total_generalization_error = 0
@@ -123,6 +151,9 @@ def experiment():
         target_line.print_object()
         hypothesis_line = run_linear_regression(training_points, target_line)
         hypothesis_line.print_object()
+        target_vector = generate_target_vector(target_line, training_points)
+        print('Here comes the plot.')
+        #plot_linear_regression(training_points, target_vector, hypothesis_line)
         ein = estimate_ein(hypothesis_line, target_line, training_points)
         print(ein)
         eout = estimate_eout(hypothesis_line, target_line, 1000)
@@ -159,6 +190,7 @@ def experiment_Q7():
     #print('average_generalization_error: ', average_generalization_error)
 
 def main():
+    
     sum_x = 0
     sum_y = 0
     for x,y in experiment():
@@ -166,6 +198,8 @@ def main():
         sum_y += y
     print("average for ein" , sum_x/1000)
     print("average for eout", sum_y/1000)
+    
+    experiment()
     experiment_Q7()
 if __name__ == "__main__":
     assert(intercept(1, 6, 3, 12) == 3.0)
